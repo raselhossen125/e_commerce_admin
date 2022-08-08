@@ -1,5 +1,14 @@
 // ignore_for_file: prefer_const_constructors, unused_local_variable
 
+import 'package:e_commerce_admin/pages/category_page.dart';
+import 'package:e_commerce_admin/pages/launcher_page.dart';
+import 'package:e_commerce_admin/pages/logIn_page.dart';
+import 'package:e_commerce_admin/pages/new_products_page.dart';
+import 'package:e_commerce_admin/pages/orders_page.dart';
+import 'package:e_commerce_admin/pages/products_page.dart';
+import 'package:e_commerce_admin/pages/report_page.dart';
+import 'package:e_commerce_admin/pages/settings_page.dart';
+import 'package:e_commerce_admin/pages/users_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +20,8 @@ void main() async {
   await Firebase.initializeApp();
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
-      statusBarColor: Color(0xff04AA6D),
+      statusBarColor: Color(0xff4FAA89),
       statusBarIconBrightness: Brightness.light,
-      statusBarBrightness: Brightness.light
     ),
   );
   runApp(
@@ -38,14 +46,25 @@ class MyApp extends StatelessWidget {
       800: Color.fromARGB(255, 255, 88, 88),
       900: Color.fromARGB(255, 252, 70, 70),
     };
-    MaterialColor pokeballRed = MaterialColor(0xff04AA6D, pokeballRedSwatch);
+    MaterialColor pokeballRed = MaterialColor(0xff4FAA89, pokeballRedSwatch);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: pokeballRed),
-      initialRoute: DashbordPage.routeName,
+      theme: ThemeData(
+        primarySwatch: pokeballRed,
+      ),
+      initialRoute: LauncherPage.routeName,
       routes: {
+        LauncherPage.routeName: (_) => LauncherPage(),
+        LogInPage.routeName: (_) => LogInPage(),
         DashbordPage.routeName: (_) => DashbordPage(),
+        CategoryPage.routeName: (_) => CategoryPage(),
+        OrdersPage.routeName: (_) => OrdersPage(),
+        ProductsPage.routeName: (_) => ProductsPage(),
+        ReportPage.routeName: (_) => ReportPage(),
+        SettingsPage.routeName: (_) => SettingsPage(),
+        UsersPage.routeName: (_) => UsersPage(),
+        NewProductsPage.routeName: (_) => NewProductsPage(),
       },
     );
   }
