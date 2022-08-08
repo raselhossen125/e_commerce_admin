@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 const String PurchaseId = 'id';
 const String PurchaseProductId = 'productId';
 const String PurchaseDate = 'purchaseDate';
@@ -8,14 +10,14 @@ class PurchaseModel {
   String? id;
   String? productId;
   String? purchaseDate;
-  num? productPrice;
+  num? purchasePrice;
   num? productQuantity;
 
   PurchaseModel({
     this.id,
     this.productId,
     this.purchaseDate,
-    this.productPrice,
+    this.purchasePrice,
     this.productQuantity,
   });
 
@@ -24,7 +26,7 @@ class PurchaseModel {
       PurchaseId: id,
       PurchaseProductId: productId,
       PurchaseDate: purchaseDate,
-      PurchaseProductPrice: productPrice,
+      PurchaseProductPrice: purchasePrice,
       PurchaseProductQunatity: productQuantity
     };
   }
@@ -33,7 +35,7 @@ class PurchaseModel {
     id: map[PurchaseId],
     productId: map[PurchaseProductId],
     purchaseDate: map[PurchaseDate],
-    productPrice: map[PurchaseProductPrice],
+    purchasePrice: map[PurchaseProductPrice],
     productQuantity: map[PurchaseProductQunatity],
   );
 }

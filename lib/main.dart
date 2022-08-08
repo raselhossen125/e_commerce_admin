@@ -22,6 +22,7 @@ void main() async {
     SystemUiOverlayStyle(
       statusBarColor: Color(0xff4FAA89),
       statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light,
     ),
   );
   runApp(

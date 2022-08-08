@@ -10,6 +10,7 @@ import 'package:e_commerce_admin/pages/settings_page.dart';
 import 'package:e_commerce_admin/pages/users_page.dart';
 import 'package:e_commerce_admin/untils/colors.dart';
 import 'package:e_commerce_admin/widgets/dashbord_item_view.dart';
+import 'package:e_commerce_admin/widgets/main_dawer.dart';
 import 'package:flutter/material.dart';
 
 class DashbordPage extends StatelessWidget {
@@ -29,7 +30,7 @@ class DashbordPage extends StatelessWidget {
         },
         child: Icon(Icons.add),
       ),
-      drawer: Drawer(),
+      drawer: MainDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: GridView.builder(

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names, camel_case_types
+
 const String CategoryId = 'catId';
 const String CategoryName = 'catName';
 const String CategoryAvailable = 'available';

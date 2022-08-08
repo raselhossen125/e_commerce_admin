@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 const String ProductId = 'id';
 const String ProductName = 'name';
 const String ProductCategory = 'category';
