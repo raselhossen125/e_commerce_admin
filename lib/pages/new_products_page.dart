@@ -101,10 +101,10 @@ class _NewProductsPageState extends State<NewProductsPage> {
                   child: Center(
                       child: imagePath == null
                           ? Image.asset(
-                              'images/person.png',
-                              height: 100,
+                              'images/product.jpg',
+                              height: 250,
                               width: double.infinity,
-                              fit: BoxFit.contain,
+                              fit: BoxFit.cover,
                             )
                           : Image.file(
                               File(imagePath!),
