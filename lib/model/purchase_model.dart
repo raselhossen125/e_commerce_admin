@@ -12,15 +12,15 @@ class PurchaseModel {
   String? id;
   String? productId;
   DateModel dateModel;
-  num? purchasePrice;
-  num? productQuantity;
+  num purchasePrice;
+  num productQuantity;
 
   PurchaseModel({
     this.id,
     this.productId,
     required this.dateModel,
-    this.purchasePrice,
-    this.productQuantity,
+    required this.purchasePrice,
+    required this.productQuantity,
   });
 
   Map<String, dynamic> toMap() {

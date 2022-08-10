@@ -1,6 +1,10 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, unused_field, sized_box_for_whitespace, unused_local_variable, unused_element, avoid_unnecessary_containers, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, unused_field, sized_box_for_whitespace, unused_local_variable, unused_element, avoid_unnecessary_containers, non_constant_identifier_names, empty_catches, use_build_context_synchronously
 
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_admin/model/date_model.dart';
+import 'package:e_commerce_admin/model/product_model.dart';
+import 'package:e_commerce_admin/model/purchase_model.dart';
 import 'package:e_commerce_admin/provider/product_provider.dart';
 import 'package:e_commerce_admin/untils/colors.dart';
 import 'package:e_commerce_admin/widgets/new_product_textField.dart';
@@ -12,7 +16,6 @@ import 'package:provider/provider.dart';
 class NewProductsPage extends StatefulWidget {
   static const routeName = '/new-products';
   @override
-
   State<NewProductsPage> createState() => _NewProductsPageState();
 }
 
@@ -25,7 +28,7 @@ class _NewProductsPageState extends State<NewProductsPage> {
   final purchaseQuantityController = TextEditingController();
 
   String? pickeddate;
-  String? imagePath;
+  String? imageUrl;
   bool isGalary = true;
   String? CategorySelectedValue;
 
@@ -80,7 +83,8 @@ class _NewProductsPageState extends State<NewProductsPage> {
                       SizedBox(width: 110),
                       Text(
                         pickeddate == null
-                            ? DateFormat('dd/MM/yyyy').format(DateTime.now())
+                            ? pickeddate =
+                                DateFormat('dd/MM/yyyy').format(DateTime.now())
                             : pickeddate!,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -99,15 +103,15 @@ class _NewProductsPageState extends State<NewProductsPage> {
                   height: 250,
                   width: double.infinity,
                   child: Center(
-                      child: imagePath == null
+                      child: imageUrl == null
                           ? Image.asset(
                               'images/product.jpg',
                               height: 250,
                               width: double.infinity,
                               fit: BoxFit.cover,
                             )
-                          : Image.file(
-                              File(imagePath!),
+                          : Image.network(
+                              imageUrl!,
                               height: 250,
                               width: double.infinity,
                               fit: BoxFit.cover,
@@ -243,7 +247,7 @@ class _NewProductsPageState extends State<NewProductsPage> {
                               fontSize: 18),
                           items: provider.categoryList.map((model) {
                             return DropdownMenuItem(
-                             value: model.catName,
+                              value: model.catName,
                               child: Text(model.catName!),
                             );
                           }).toList(),
@@ -331,9 +335,13 @@ class _NewProductsPageState extends State<NewProductsPage> {
     final selectedImage = await ImagePicker()
         .pickImage(source: isGalary ? ImageSource.gallery : ImageSource.camera);
     if (selectedImage != null) {
-      setState(() {
-        imagePath = selectedImage.path;
-      });
+      try {
+        final url =
+            await context.read<ProductProvider>().updateImage(selectedImage);
+        setState(() {
+          imageUrl = url;
+        });
+      } catch (e) {}
     }
   }
 
@@ -353,7 +361,25 @@ class _NewProductsPageState extends State<NewProductsPage> {
 
   void _submitNewProduct() {
     if (_formKey.currentState!.validate()) {
-      
+      if (imageUrl != null && CategorySelectedValue != null) {
+        final productModel = ProductModel(
+          name: productNameController.text,
+          descripton: productDescriptonController.text,
+          salePrice: num.parse(productSalePriceController.text),
+          category: CategorySelectedValue,
+          imageUrl: imageUrl,
+        );
+        final purchaseModel = PurchaseModel(
+          dateModel: DateModel(
+            timestamp: Timestamp.now(),
+            day: DateTime.now().day,
+            month: DateTime.now().month,
+            year: DateTime.now().year,
+          ),
+          purchasePrice: num.parse(purchasePriceController.text),
+          productQuantity: num.parse(purchaseQuantityController.text),
+        );
+      }
     }
   }
 }

@@ -50,16 +50,16 @@ class _LogInPageState extends State<LogInPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 5),
                   Container(
-                    height: 90,
-                    width: 90,
+                    height: 250,
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
                     ),
-                    child: Image.asset('images/person.png'),
+                    child: Image.asset('images/login1.jpg'),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
                   Form(
                     key: formkey,
                     child: Column(
