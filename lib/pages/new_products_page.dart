@@ -1,16 +1,18 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, unused_field, sized_box_for_whitespace, unused_local_variable, unused_element, avoid_unnecessary_containers
 
 import 'dart:io';
+import 'package:e_commerce_admin/provider/product_provider.dart';
 import 'package:e_commerce_admin/untils/colors.dart';
 import 'package:e_commerce_admin/widgets/new_product_textField.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class NewProductsPage extends StatefulWidget {
   static const routeName = '/new-products';
-
   @override
+
   State<NewProductsPage> createState() => _NewProductsPageState();
 }
 
@@ -26,8 +28,6 @@ class _NewProductsPageState extends State<NewProductsPage> {
   String? imagePath;
   bool isGalary = true;
   String? selectedValue;
-
-  List<String> items = ['A', 'B', 'C', 'D', 'E', 'F'];
 
   @override
   void dispose() {
@@ -228,30 +228,31 @@ class _NewProductsPageState extends State<NewProductsPage> {
                         ),
                       ),
                       Spacer(),
-                      DropdownButton(
-                        // value: selectedValue,
-                        borderRadius: BorderRadius.circular(15),
-                        underline: Text(""),
-                        dropdownColor: Colors.white,
-                        icon: Icon(
-                          Icons.keyboard_arrow_down,
-                          color: appColor.cardColor,
+                      Consumer<ProductProvider>(
+                        builder: (context, provider, _) => DropdownButton(
+                          borderRadius: BorderRadius.circular(15),
+                          underline: Text(""),
+                          dropdownColor: Colors.white,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: appColor.cardColor,
+                          ),
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontSize: 18),
+                          items: provider.categoryList.map((model) {
+                            return DropdownMenuItem(
+                             value: model.catName,
+                              child: Text(model.catName!),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedValue = newValue.toString();
+                            });
+                          },
                         ),
-                        style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            fontSize: 18),
-                        items: items.map((String items) {
-                          return DropdownMenuItem(
-                           value: items,
-                            child: Text(items),
-                          );
-                        }).toList(),
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedValue = newValue.toString();
-                          });
-                        },
                       ),
                     ],
                   ),

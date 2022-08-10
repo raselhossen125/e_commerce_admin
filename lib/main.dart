@@ -9,10 +9,11 @@ import 'package:e_commerce_admin/pages/products_page.dart';
 import 'package:e_commerce_admin/pages/report_page.dart';
 import 'package:e_commerce_admin/pages/settings_page.dart';
 import 'package:e_commerce_admin/pages/users_page.dart';
+import 'package:e_commerce_admin/provider/product_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:provider/provider.dart';
 import 'pages/dashbord_page.dart';
 
 void main() async {
@@ -26,7 +27,12 @@ void main() async {
     ),
   );
   runApp(
-    const MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ProductProvider()),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 

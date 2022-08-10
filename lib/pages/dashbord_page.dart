@@ -8,27 +8,23 @@ import 'package:e_commerce_admin/pages/products_page.dart';
 import 'package:e_commerce_admin/pages/report_page.dart';
 import 'package:e_commerce_admin/pages/settings_page.dart';
 import 'package:e_commerce_admin/pages/users_page.dart';
+import 'package:e_commerce_admin/provider/product_provider.dart';
 import 'package:e_commerce_admin/untils/colors.dart';
 import 'package:e_commerce_admin/widgets/dashbord_item_view.dart';
 import 'package:e_commerce_admin/widgets/main_dawer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DashbordPage extends StatelessWidget {
   static const routeName = '/dashbord';
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ProductProvider>(context, listen: false).getAllcategories();
     return Scaffold(
       backgroundColor: appColor.bgColor,
       appBar: AppBar(
         title: Text('Dashbord'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: appColor.cardColor,
-        onPressed: () {
-          Navigator.of(context).pushNamed(NewProductsPage.routeName);
-        },
-        child: Icon(Icons.add),
       ),
       drawer: MainDrawer(),
       body: Padding(

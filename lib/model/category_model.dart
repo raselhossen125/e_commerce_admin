@@ -2,16 +2,19 @@
 
 const String CategoryId = 'catId';
 const String CategoryName = 'catName';
+const String CategoryProductCount = 'count';
 const String CategoryAvailable = 'available';
 
-class categoryModel {
+class CategoryModel {
   String? catId;
   String? catName;
+  num count;
   bool available;
 
-  categoryModel({
+  CategoryModel({
     this.catId,
     this.catName,
+    this.count = 0,
     this.available = true,
   });
 
@@ -19,13 +22,20 @@ class categoryModel {
     return <String, dynamic>{
       CategoryId: catId,
       CategoryName: catName,
+      CategoryProductCount: count,
       CategoryAvailable: available,
     };
   }
 
-  factory categoryModel.fromMap(Map<String, dynamic> map) => categoryModel(
+  factory CategoryModel.fromMap(Map<String, dynamic> map) => CategoryModel(
     catId: map[CategoryId],
     catName: map[CategoryName],
+    count: map[CategoryProductCount],
     available: map[CategoryAvailable],
   );
+
+  @override
+  String toString() {
+    return 'CategoryModel{catId: $catId, catName: $catName, count: $count, available: $available}';
+  }
 }
