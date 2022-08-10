@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, unused_field, sized_box_for_whitespace, unused_local_variable, unused_element, avoid_unnecessary_containers
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_literals_to_create_immutables, unused_field, sized_box_for_whitespace, unused_local_variable, unused_element, avoid_unnecessary_containers, non_constant_identifier_names
 
 import 'dart:io';
 import 'package:e_commerce_admin/provider/product_provider.dart';
@@ -27,7 +27,7 @@ class _NewProductsPageState extends State<NewProductsPage> {
   String? pickeddate;
   String? imagePath;
   bool isGalary = true;
-  String? selectedValue;
+  String? CategorySelectedValue;
 
   @override
   void dispose() {
@@ -218,9 +218,9 @@ class _NewProductsPageState extends State<NewProductsPage> {
                     children: [
                       FittedBox(
                         child: Text(
-                          selectedValue == null
+                          CategorySelectedValue == null
                               ? 'No category Selected'
-                              : selectedValue!,
+                              : CategorySelectedValue!,
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
@@ -249,7 +249,7 @@ class _NewProductsPageState extends State<NewProductsPage> {
                           }).toList(),
                           onChanged: (newValue) {
                             setState(() {
-                              selectedValue = newValue.toString();
+                              CategorySelectedValue = newValue.toString();
                             });
                           },
                         ),
@@ -300,7 +300,7 @@ class _NewProductsPageState extends State<NewProductsPage> {
               ),
               SizedBox(height: 25),
               InkWell(
-                onTap: () {},
+                onTap: _submitNewProduct,
                 child: Container(
                   alignment: Alignment.center,
                   height: 50,
@@ -348,6 +348,12 @@ class _NewProductsPageState extends State<NewProductsPage> {
       setState(() {
         pickeddate = DateFormat('dd/MM/yyyy').format(selectedDate);
       });
+    }
+  }
+
+  void _submitNewProduct() {
+    if (_formKey.currentState!.validate()) {
+      
     }
   }
 }

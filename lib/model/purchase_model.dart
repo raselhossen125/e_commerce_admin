@@ -1,22 +1,24 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:e_commerce_admin/model/date_model.dart';
+
 const String PurchaseId = 'id';
 const String PurchaseProductId = 'productId';
-const String PurchaseDate = 'purchaseDate';
+const String PurchaseDateModel = 'dateModel';
 const String PurchaseProductPrice = 'productPrice';
 const String PurchaseProductQunatity = 'productQuantity';
 
 class PurchaseModel {
   String? id;
   String? productId;
-  String? purchaseDate;
+  DateModel dateModel;
   num? purchasePrice;
   num? productQuantity;
 
   PurchaseModel({
     this.id,
     this.productId,
-    this.purchaseDate,
+    required this.dateModel,
     this.purchasePrice,
     this.productQuantity,
   });
@@ -25,7 +27,7 @@ class PurchaseModel {
     return <String, dynamic>{
       PurchaseId: id,
       PurchaseProductId: productId,
-      PurchaseDate: purchaseDate,
+      PurchaseDateModel: dateModel.toMap(dateModel),
       PurchaseProductPrice: purchasePrice,
       PurchaseProductQunatity: productQuantity
     };
@@ -34,13 +36,13 @@ class PurchaseModel {
   factory PurchaseModel.fromMap(Map<String, dynamic> map) => PurchaseModel(
     id: map[PurchaseId],
     productId: map[PurchaseProductId],
-    purchaseDate: map[PurchaseDate],
+    dateModel: DateModel.fromMap(map[PurchaseDateModel]),
     purchasePrice: map[PurchaseProductPrice],
     productQuantity: map[PurchaseProductQunatity],
   );
 
   @override
   String toString() {
-    return 'PurchaseModel{id: $id, productId: $productId, purchaseDate: $purchaseDate, purchasePrice: $purchasePrice, productQuantity: $productQuantity}';
+    return 'PurchaseModel{id: $id, productId: $productId, dateModel: $PurchaseDateModel, purchasePrice: $purchasePrice, productQuantity: $productQuantity}';
   }
 }

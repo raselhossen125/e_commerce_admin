@@ -20,7 +20,7 @@ class DateModel {
     required this.year,
   });
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap(DateModel dateModel) {
     return <String, dynamic>{
       TimeStamp: timestamp,
       Day: day,
