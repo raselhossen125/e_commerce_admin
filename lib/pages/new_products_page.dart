@@ -13,6 +13,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../untils/helper_function.dart';
+
 class NewProductsPage extends StatefulWidget {
   static const routeName = '/new-products';
   @override
@@ -27,7 +29,8 @@ class _NewProductsPageState extends State<NewProductsPage> {
   final purchasePriceController = TextEditingController();
   final purchaseQuantityController = TextEditingController();
 
-  String? pickeddate;
+  DateTime? pickeddate;
+  bool isUploding = false;
   String? imageUrl;
   bool isGalary = true;
   String? CategorySelectedValue;
@@ -83,9 +86,10 @@ class _NewProductsPageState extends State<NewProductsPage> {
                       SizedBox(width: 110),
                       Text(
                         pickeddate == null
-                            ? pickeddate =
-                                DateFormat('dd/MM/yyyy').format(DateTime.now())
-                            : pickeddate!,
+                            ? 'No date chossen'
+                            // pickeddate =
+                            //         DateFormat('dd/MM/yyyy').format(DateTime.now())
+                            : getFormatedDateTime(pickeddate!, 'dd/MM/yyyy'),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -303,26 +307,28 @@ class _NewProductsPageState extends State<NewProductsPage> {
                 ),
               ),
               SizedBox(height: 25),
-              InkWell(
-                onTap: _submitNewProduct,
-                child: Container(
-                  alignment: Alignment.center,
-                  height: 50,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: appColor.cardColor,
-                  ),
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 16,
+              isUploding
+                  ? CircularProgressIndicator()
+                  : InkWell(
+                      onTap: _submitNewProduct,
+                      child: Container(
+                        alignment: Alignment.center,
+                        height: 50,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: appColor.cardColor,
+                        ),
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -335,11 +341,15 @@ class _NewProductsPageState extends State<NewProductsPage> {
     final selectedImage = await ImagePicker()
         .pickImage(source: isGalary ? ImageSource.gallery : ImageSource.camera);
     if (selectedImage != null) {
+      setState(() {
+        isUploding = true;
+      });
       try {
         final url =
             await context.read<ProductProvider>().updateImage(selectedImage);
         setState(() {
           imageUrl = url;
+          isUploding = false;
         });
       } catch (e) {}
     }
@@ -354,32 +364,65 @@ class _NewProductsPageState extends State<NewProductsPage> {
     );
     if (selectedDate != null) {
       setState(() {
-        pickeddate = DateFormat('dd/MM/yyyy').format(selectedDate);
+        pickeddate = selectedDate;
       });
     }
   }
 
   void _submitNewProduct() {
-    if (_formKey.currentState!.validate()) {
-      if (imageUrl != null && CategorySelectedValue != null) {
-        final productModel = ProductModel(
-          name: productNameController.text,
-          descripton: productDescriptonController.text,
-          salePrice: num.parse(productSalePriceController.text),
-          category: CategorySelectedValue,
-          imageUrl: imageUrl,
-        );
-        final purchaseModel = PurchaseModel(
-          dateModel: DateModel(
-            timestamp: Timestamp.now(),
-            day: DateTime.now().day,
-            month: DateTime.now().month,
-            year: DateTime.now().year,
-          ),
-          purchasePrice: num.parse(purchasePriceController.text),
-          productQuantity: num.parse(purchaseQuantityController.text),
-        );
-      }
+    if (pickeddate == null) {
+      showMsg(context, 'Please select a date');
+      return;
     }
+    if (imageUrl == null) {
+      showMsg(context, 'Please select an image');
+      return;
+    }if (CategorySelectedValue == null) {
+      showMsg(context, 'Please select an category');
+      return;
+    }
+    if (_formKey.currentState!.validate()) {
+      final productModel = ProductModel(
+        name: productNameController.text,
+        descripton: productDescriptonController.text,
+        salePrice: num.parse(productSalePriceController.text),
+        category: CategorySelectedValue,
+        imageUrl: imageUrl,
+      );
+      final purchaseModel = PurchaseModel(
+        dateModel: DateModel(
+          timestamp: Timestamp.fromDate(pickeddate!),
+          day: pickeddate!.day,
+          month: pickeddate!.month,
+          year: pickeddate!.year,
+        ),
+        purchasePrice: num.parse(purchasePriceController.text),
+        productQuantity: num.parse(purchaseQuantityController.text),
+      );
+      final catModel = context
+          .read<ProductProvider>()
+          .getCategoryModelByCatName(CategorySelectedValue!);
+      context
+          .read<ProductProvider>()
+          .addNewProduct(productModel, purchaseModel, catModel)
+          .then((value) {
+        _resetField();
+      }).catchError((error) {
+        showMsg(context, 'Could not find');
+      });
+    }
+  }
+
+  void _resetField() {
+    setState(() {
+      productNameController.clear();
+      productDescriptonController.clear();
+      productSalePriceController.clear();
+      purchasePriceController.clear();
+      purchaseQuantityController.clear();
+      imageUrl = null;
+      CategorySelectedValue = null;
+      pickeddate = null;
+    });
   }
 }
