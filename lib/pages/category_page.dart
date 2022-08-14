@@ -44,52 +44,51 @@ class CategoryPage extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
               title: Text('Add category'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: nameController,
-                    cursorColor: appColor.cardColor,
-                    keyboardType: TextInputType.emailAddress,
-                    style: TextStyle(
-                        color: appColor.cardColor, fontWeight: FontWeight.w500),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.withOpacity(0.1),
-                      contentPadding: EdgeInsets.only(left: 10),
-                      focusColor: Colors.grey.withOpacity(0.1),
-                      prefixIcon: Icon(
-                        Icons.category,
-                        size: 20,
-                        color: appColor.cardColor,
-                      ),
-                      hintText: "Category Name",
-                      hintStyle: TextStyle(
-                          color: Colors.grey, fontWeight: FontWeight.normal),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
+              content: TextFormField(
+                controller: nameController,
+                cursorColor: appColor.cardColor,
+                keyboardType: TextInputType.emailAddress,
+                style: TextStyle(
+                    color: appColor.cardColor, fontWeight: FontWeight.w500),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.grey.withOpacity(0.1),
+                  contentPadding: EdgeInsets.only(left: 10),
+                  focusColor: Colors.grey.withOpacity(0.1),
+                  prefixIcon: Icon(
+                    Icons.category,
+                    size: 20,
+                    color: appColor.cardColor,
                   ),
-                  SizedBox(
-                    height: 15,
+                  hintText: "Category Name",
+                  hintStyle: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.normal),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        context
-                            .read<ProductProvider>()
-                            .addCategory(CategoryModel(
-                              catName: nameController.text,
-                            ))
-                            .then((value) {
-                          nameController.clear();
-                          Navigator.of(context).pop();
-                        });
-                      },
-                      child: Text('Add')),
-                ],
+                ),
               ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel')),
+                TextButton(
+                    onPressed: () {
+                      context
+                          .read<ProductProvider>()
+                          .addCategory(CategoryModel(
+                            catName: nameController.text,
+                          ))
+                          .then((value) {
+                        nameController.clear();
+                        Navigator.of(context).pop();
+                      });
+                    },
+                    child: Text('Add')),
+              ],
             ));
   }
 }

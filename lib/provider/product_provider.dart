@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:e_commerce_admin/db/db_helper.dart';
 import 'package:e_commerce_admin/model/product_model.dart';
+import 'package:e_commerce_admin/model/purchase_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +16,15 @@ class ProductProvider extends ChangeNotifier {
   Future<void> addCategory(CategoryModel categoryModel) =>
       DBHelper.addNewCategory(categoryModel);
 
+  Future<void> addNewProduct(
+    ProductModel productModel,
+    PurchaseModel purchaseModel,
+    CategoryModel categoryModel,
+  ) {
+    final count = categoryModel.count + purchaseModel.productQuantity;
+    return DBHelper.addProduct(productModel, purchaseModel, categoryModel.catId!, count);
+  }
+
   getAllcategories() {
     DBHelper.getAllCategories().listen((snapsort) {
       categoryList = List.generate(snapsort.docs.length,
@@ -23,10 +33,25 @@ class ProductProvider extends ChangeNotifier {
     });
   }
 
+  getAllProducts() {
+    DBHelper.getAllProducts().listen((snapsort) {
+      productList = List.generate(snapsort.docs.length,
+          (index) => ProductModel.fromMap(snapsort.docs[index].data()));
+    });
+  }
+
+  CategoryModel getCategoryModelByCatName(String name) {
+    return categoryList.firstWhere((element) => element.catName == name);
+  }
+
+  Future<void> updateproduct(String id, String field, dynamic value) {
+    return DBHelper.upDateProduct(id, {field: value});
+  }
+
   Future<String> updateImage(XFile xFile) async {
     final imagename = DateTime.now().millisecondsSinceEpoch.toString();
     final photoRefarance =
-    FirebaseStorage.instance.ref().child('pictures/$imagename');
+        FirebaseStorage.instance.ref().child('pictures/$imagename');
     final uploadtask = photoRefarance.putFile(File(xFile.path));
     final snapshort = await uploadtask.whenComplete(() => null);
     return snapshort.ref.getDownloadURL();
