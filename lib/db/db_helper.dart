@@ -38,7 +38,8 @@ class DBHelper {
     final purDoc = _db.collection(purchaseCollection).doc();
     final catDoc = _db.collection(categoriesCollection).doc(catId);
     productModel.id = proDoc.id;
-    purchaseModel.productId = purDoc.id;
+    purchaseModel.id = purDoc.id;
+    purchaseModel.productId = proDoc.id;
     wb.set(proDoc, productModel.toMap());
     wb.set(purDoc, purchaseModel.toMap());
     wb.update(catDoc, {CategoryProductCount: count});
@@ -50,6 +51,17 @@ class DBHelper {
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllProducts() =>
       _db.collection(productsCollection).snapshots();
+
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getProductById(
+          String id) =>
+      _db.collection(productsCollection).doc(id).snapshots();
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getPurchaseByProductId(
+          String id) =>
+      _db
+          .collection(purchaseCollection)
+          .where(PurchaseProductId, isEqualTo: id)
+          .snapshots();
 
   static upDateProduct(String id, Map<String, dynamic> map) {
     return _db.collection(productsCollection).doc(id).update(map);
