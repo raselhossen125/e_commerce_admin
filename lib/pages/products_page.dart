@@ -1,10 +1,10 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, unused_local_variable, sort_child_properties_last
 
 import 'package:e_commerce_admin/pages/product_details_page.dart';
 import 'package:e_commerce_admin/untils/colors.dart';
+import 'package:e_commerce_admin/untils/constransts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../provider/product_provider.dart';
 import 'new_products_page.dart';
 
@@ -26,18 +26,67 @@ class ProductsPage extends StatelessWidget {
       ),
       body: Consumer<ProductProvider>(
         builder: (context, provider, _) => provider.productList.isNotEmpty
-            ? ListView.builder(
-                itemCount: provider.productList.length,
-                itemBuilder: (context, index) {
-                  final product = provider.productList[index];
-                  return ListTile(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(ProductDetailsPage.routeName, arguments: product.id);
-                    },
-                    title: Text(product.name!),
+            ? StreamBuilder(
+                stream: provider.getAllProducts(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return GridView.builder(
+                      itemCount: provider.productList.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 4,
+                          mainAxisSpacing: 4,
+                          childAspectRatio: 2 / 2.4),
+                      itemBuilder: (context, index) {
+                        final product = provider.productList[index];
+                        return InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                ProductDetailsPage.routeName,
+                                arguments: product.id);
+                          },
+                          child: Card(
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                      child: Image.network(
+                                    product.imageUrl!,
+                                    height: 140,
+                                    width: 140,
+                                    fit: BoxFit.contain,
+                                  )),
+                                  Spacer(),
+                                  Text(
+                                    product.name!,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                      '$currencySymbol${product.salePrice.toString()}'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('No data found'));
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
-                },
-              )
+                })
             : Center(
                 child: Text('No Products Found'),
               ),

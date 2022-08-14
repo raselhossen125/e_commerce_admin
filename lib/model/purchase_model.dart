@@ -40,9 +40,4 @@ class PurchaseModel {
     purchasePrice: map[PurchaseProductPrice],
     productQuantity: map[PurchaseProductQunatity],
   );
-
-  @override
-  String toString() {
-    return 'PurchaseModel{id: $id, productId: $productId, dateModel: $PurchaseDateModel, purchasePrice: $purchasePrice, productQuantity: $productQuantity}';
-  }
 }

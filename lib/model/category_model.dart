@@ -33,9 +33,4 @@ class CategoryModel {
     count: map[CategoryProductCount],
     available: map[CategoryAvailable],
   );
-
-  @override
-  String toString() {
-    return 'CategoryModel{catId: $catId, catName: $catName, count: $count, available: $available}';
-  }
 }

@@ -53,9 +53,4 @@ class ProductModel {
     available: map[ProductAvailable],
     imageUrl: map[ProductImageUrl],
   );
-
-  @override
-  String toString() {
-    return 'ProductModel{id: $id, name: $name, category: $category, descripton: $descripton, salePrice: $salePrice, featured: $featured, available: $available, imageUrl: $imageUrl}';
-  }
 }
