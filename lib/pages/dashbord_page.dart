@@ -2,7 +2,6 @@
 
 import 'package:e_commerce_admin/model/dashbord_item.dart';
 import 'package:e_commerce_admin/pages/category_page.dart';
-import 'package:e_commerce_admin/pages/new_products_page.dart';
 import 'package:e_commerce_admin/pages/orders_page.dart';
 import 'package:e_commerce_admin/pages/products_page.dart';
 import 'package:e_commerce_admin/pages/report_page.dart';

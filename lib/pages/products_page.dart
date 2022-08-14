@@ -32,7 +32,7 @@ class ProductsPage extends StatelessWidget {
                   final product = provider.productList[index];
                   return ListTile(
                     onTap: () {
-                      Navigator.of(context).pushNamed(ProductDetailsPage.routeName, arguments: product);
+                      Navigator.of(context).pushNamed(ProductDetailsPage.routeName, arguments: product.id);
                     },
                     title: Text(product.name!),
                   );

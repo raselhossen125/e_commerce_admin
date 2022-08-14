@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
+
 import 'package:e_commerce_admin/model/category_model.dart';
 import 'package:e_commerce_admin/provider/product_provider.dart';
 import 'package:e_commerce_admin/untils/colors.dart';
