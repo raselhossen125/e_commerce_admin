@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_admin/db/db_helper.dart';
+import 'package:e_commerce_admin/model/date_model.dart';
 import 'package:e_commerce_admin/model/product_model.dart';
 import 'package:e_commerce_admin/model/purchase_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,6 +18,21 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> addCategory(CategoryModel categoryModel) =>
       DBHelper.addNewCategory(categoryModel);
+
+  Future<void> rePurchase(String pId, num price, num quantity, DateTime date) {
+    final purchaseModel = PurchaseModel(
+      dateModel: DateModel(
+        timestamp: Timestamp.fromDate(date),
+        day: date.day,
+        month: date.month,
+        year: date.year,
+      ),
+      purchasePrice: price,
+      productQuantity: quantity,
+      productId: pId,
+    );
+    return DBHelper.rePurchase(purchaseModel);
+  }
 
   Future<void> addNewProduct(
     ProductModel productModel,
@@ -50,7 +66,7 @@ class ProductProvider extends ChangeNotifier {
     DBHelper.getPurchaseByProductId(id).listen((snapsort) {
       purchaseListOfSpecefixProduct = List.generate(snapsort.docs.length,
           (index) => PurchaseModel.fromMap(snapsort.docs[index].data()));
-          print(purchaseListOfSpecefixProduct.length);
+      print(purchaseListOfSpecefixProduct.length);
       notifyListeners();
     });
   }

@@ -27,6 +27,12 @@ class DBHelper {
     return doc.set(categoryModel.toMap());
   }
 
+  static Future<void> rePurchase(PurchaseModel purchaseModel) {
+    final doc = _db.collection(purchaseCollection).doc();
+    purchaseModel.id = doc.id;
+    return doc.set(purchaseModel.toMap());
+  }
+
   static Future<void> addProduct(
     ProductModel productModel,
     PurchaseModel purchaseModel,

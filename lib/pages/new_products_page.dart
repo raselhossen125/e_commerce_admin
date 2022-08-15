@@ -10,7 +10,6 @@ import 'package:e_commerce_admin/untils/colors.dart';
 import 'package:e_commerce_admin/widgets/new_product_textField.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../untils/helper_function.dart';

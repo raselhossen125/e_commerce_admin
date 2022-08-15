@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, unused_local_variable, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, unused_local_variable, prefer_const_literals_to_create_immutables, unnecessary_brace_in_string_interps, no_leading_underscores_for_local_identifiers
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_admin/model/product_model.dart';
@@ -6,12 +6,14 @@ import 'package:e_commerce_admin/provider/product_provider.dart';
 import 'package:e_commerce_admin/untils/colors.dart';
 import 'package:e_commerce_admin/untils/constransts.dart';
 import 'package:e_commerce_admin/untils/helper_function.dart';
+import 'package:e_commerce_admin/widgets/new_product_textField.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   static const routeName = '/product-details';
   final textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final pid = ModalRoute.of(context)!.settings.arguments as String;
@@ -45,10 +47,25 @@ class ProductDetailsPage extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Chip(
-                                backgroundColor: appColor.cardColor,
-                                labelStyle: TextStyle(color: Colors.white),
-                                label: Text('Re-Purchase'),
+                              InkWell(
+                                onTap: () {
+                                  _showRePurchaseBootomSheet(context,
+                                      ((price, quantity, date) {
+                                    provider
+                                        .rePurchase(pid, price, quantity, date)
+                                        .then((value) {
+                                      Navigator.of(context).pop();
+                                    }).catchError((error) {
+                                      showMsg(context, 'Could not save');
+                                      throw error;
+                                    });
+                                  }));
+                                },
+                                child: Chip(
+                                  backgroundColor: appColor.cardColor,
+                                  labelStyle: TextStyle(color: Colors.white),
+                                  label: Text('Re-Purchase'),
+                                ),
                               ),
                               SizedBox(width: 10),
                               InkWell(
@@ -176,30 +193,48 @@ class ProductDetailsPage extends StatelessWidget {
     showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
-      builder: (context) => Consumer<ProductProvider>(
-        builder: (context, provider, child) => ListView.builder(
-          itemCount: provider.purchaseListOfSpecefixProduct.length,
-          itemBuilder: (context, index) {
-            final purModel = provider.purchaseListOfSpecefixProduct[index];
-            return Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
-              child: Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(25),
-                        bottomRight: Radius.circular(25))),
-                child: ListTile(
-                  title: Text(getFormatedDateTime(
-                      purModel.dateModel.timestamp.toDate(), 'dd/MM/yyyy')),
-                  subtitle: Text('Qunatity: ${purModel.productQuantity}'),
-                  trailing: Text('$currencySymbol${purModel.purchasePrice}'),
-                ),
+      builder: (context) =>
+          Consumer<ProductProvider>(builder: (context, provider, child) {
+        return Column(
+          children: [
+            SizedBox(height: 15),
+            Text(
+              'Purchase History',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: appColor.cardColor),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: provider.purchaseListOfSpecefixProduct.length,
+                itemBuilder: (context, index) {
+                  final purModel =
+                      provider.purchaseListOfSpecefixProduct[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5, top: 5),
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(25),
+                              bottomRight: Radius.circular(25))),
+                      child: ListTile(
+                        title: Text(getFormatedDateTime(
+                            purModel.dateModel.timestamp.toDate(),
+                            'dd/MM/yyyy')),
+                        subtitle: Text('Qunatity: ${purModel.productQuantity}'),
+                        trailing:
+                            Text('$currencySymbol${purModel.purchasePrice}'),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ),
+            ),
+          ],
+        );
+      }),
     );
   }
 
@@ -256,5 +291,149 @@ class ProductDetailsPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _showRePurchaseBootomSheet(
+    BuildContext context,
+    Function(num price, num quantity, DateTime date) onSave,
+  ) {
+    final pController = TextEditingController();
+    final qController = TextEditingController();
+    ValueNotifier<DateTime> dateTimeNotyfier = ValueNotifier(DateTime.now());
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.all(16),
+          children: [
+            SizedBox(height: 20),
+            InkWell(
+              onTap: () async {
+                dateTimeNotyfier.value = await showDatePickerDialog(context);
+              },
+              child: Container(
+                height: 50,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: appColor.cardColor,
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(width: 16),
+                    Icon(
+                      Icons.calendar_month_outlined,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 110),
+                    ValueListenableBuilder(
+                      valueListenable: dateTimeNotyfier,
+                      builder: (context, value, _) => Text(
+                        getFormatedDateTime(value as DateTime, 'dd/MM/yyyy'),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 25),
+            NewProductTextField(
+              controller: pController,
+              hintText: 'Enter price',
+              prefixIcon: Icons.monetization_on,
+              keyBordType: TextInputType.number,
+            ),
+            SizedBox(height: 15),
+            NewProductTextField(
+              controller: qController,
+              hintText: 'Enter quantity',
+              prefixIcon: Icons.add,
+              keyBordType: TextInputType.number,
+            ),
+            SizedBox(height: 25),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: 40,
+                  width: 130,
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      primary: Colors.black,
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                      side: BorderSide(
+                        color: appColor.cardColor,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      'Re-Purchase',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: appColor.cardColor),
+                    ),
+                    onPressed: () {
+                      onSave(
+                        num.parse(pController.text),
+                        num.parse(qController.text),
+                        dateTimeNotyfier.value,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(width: 15),
+                Container(
+                  height: 40,
+                  width: 140,
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      primary: Colors.black,
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7),
+                      ),
+                      side: BorderSide(
+                        color: appColor.cardColor,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      'Close',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: appColor.cardColor),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<DateTime> showDatePickerDialog(BuildContext context) async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+    );
+    if (selectedDate != null) {
+      return selectedDate;
+    }
+    return DateTime.now();
   }
 }
