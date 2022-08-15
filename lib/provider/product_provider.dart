@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_local_variable
 
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +19,9 @@ class ProductProvider extends ChangeNotifier {
   Future<void> addCategory(CategoryModel categoryModel) =>
       DBHelper.addNewCategory(categoryModel);
 
-  Future<void> rePurchase(String pId, num price, num quantity, DateTime date) {
+  Future<void> rePurchase(String pId, num price, num quantity, DateTime date, String catName) {
+    final catModel = getCategoryModelByCatName(catName);
+    catModel.count += quantity;
     final purchaseModel = PurchaseModel(
       dateModel: DateModel(
         timestamp: Timestamp.fromDate(date),
@@ -31,7 +33,7 @@ class ProductProvider extends ChangeNotifier {
       productQuantity: quantity,
       productId: pId,
     );
-    return DBHelper.rePurchase(purchaseModel);
+    return DBHelper.rePurchase(purchaseModel, catModel);
   }
 
   Future<void> addNewProduct(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_admin/model/order_constants_model.dart';
 import 'package:e_commerce_admin/model/product_model.dart';
 import 'package:e_commerce_admin/model/purchase_model.dart';
 
@@ -13,7 +14,7 @@ class DBHelper {
   static const ordersCollection = 'Orders';
   static const ordersDetailsCollection = 'OrderDetails';
   static const settingsCollection = 'Settings';
-  static const documentConstant = 'OrderConstant';
+  static const documentOrderConstant = 'OrderConstant';
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   static Future<bool> isAdmin(String uid) async {
@@ -27,10 +28,20 @@ class DBHelper {
     return doc.set(categoryModel.toMap());
   }
 
-  static Future<void> rePurchase(PurchaseModel purchaseModel) {
+  static Future<void> addOrderConstants(OrderConstantsModel model) => _db
+      .collection(settingsCollection)
+      .doc(documentOrderConstant)
+      .set(model.toMap());
+
+  static Future<void> rePurchase(
+      PurchaseModel purchaseModel, CategoryModel catModel) {
+    final wb = _db.batch();
     final doc = _db.collection(purchaseCollection).doc();
     purchaseModel.id = doc.id;
-    return doc.set(purchaseModel.toMap());
+    wb.set(doc, purchaseModel.toMap());
+    final catDoc = _db.collection(categoriesCollection).doc(catModel.catId);
+    wb.update(catDoc, {CategoryProductCount: catModel.count});
+    return wb.commit();
   }
 
   static Future<void> addProduct(
@@ -57,6 +68,9 @@ class DBHelper {
 
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllProducts() =>
       _db.collection(productsCollection).snapshots();
+
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getOrderConstants() =>
+      _db.collection(settingsCollection).doc(documentOrderConstant).snapshots();
 
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getProductById(
           String id) =>

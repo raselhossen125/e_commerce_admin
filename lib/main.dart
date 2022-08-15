@@ -10,6 +10,7 @@ import 'package:e_commerce_admin/pages/products_page.dart';
 import 'package:e_commerce_admin/pages/report_page.dart';
 import 'package:e_commerce_admin/pages/settings_page.dart';
 import 'package:e_commerce_admin/pages/users_page.dart';
+import 'package:e_commerce_admin/provider/order_provider.dart';
 import 'package:e_commerce_admin/provider/product_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ProductProvider()),
+        ChangeNotifierProvider(create: (context) => OrderProvider()),
       ],
       child: const MyApp(),
     ),

@@ -52,7 +52,7 @@ class ProductDetailsPage extends StatelessWidget {
                                   _showRePurchaseBootomSheet(context,
                                       ((price, quantity, date) {
                                     provider
-                                        .rePurchase(pid, price, quantity, date)
+                                        .rePurchase(pid, price, quantity, date, product.category!)
                                         .then((value) {
                                       Navigator.of(context).pop();
                                     }).catchError((error) {
