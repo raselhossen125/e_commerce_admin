@@ -17,175 +17,173 @@ class ProductDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pid = ModalRoute.of(context)!.settings.arguments as String;
+    final provider = Provider.of<ProductProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('Product Details'),
       ),
-      body: Consumer<ProductProvider>(
-        builder: (context, provider, _) =>
-            StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                stream: provider.getProductById(pid),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final product =
-                        ProductModel.fromMap(snapshot.data!.data()!);
-                    return ListView(
+      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: provider.getProductById(pid),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final product = ProductModel.fromMap(snapshot.data!.data()!);
+              return ListView(
+                children: [
+                  SizedBox(height: 10),
+                  FadeInImage.assetNetwork(
+                    placeholder: 'images/product.jpg',
+                    image: product.imageUrl!,
+                    fadeInCurve: Curves.bounceInOut,
+                    fadeInDuration: Duration(seconds: 3),
+                    width: double.infinity,
+                    height: 260,
+                    fit: BoxFit.contain,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 25, left: 10, right: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: 10),
-                        FadeInImage.assetNetwork(
-                          placeholder: 'images/product.jpg',
-                          image: product.imageUrl!,
-                          fadeInCurve: Curves.bounceInOut,
-                          fadeInDuration: Duration(seconds: 3),
-                          width: double.infinity,
-                          height: 260,
-                          fit: BoxFit.contain,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 25, left: 10, right: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _showRePurchaseBootomSheet(context,
-                                      ((price, quantity, date) {
-                                    provider
-                                        .rePurchase(pid, price, quantity, date, product.category!)
-                                        .then((value) {
-                                      Navigator.of(context).pop();
-                                    }).catchError((error) {
-                                      showMsg(context, 'Could not save');
-                                      throw error;
-                                    });
-                                  }));
-                                },
-                                child: Chip(
-                                  backgroundColor: appColor.cardColor,
-                                  labelStyle: TextStyle(color: Colors.white),
-                                  label: Text('Re-Purchase'),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              InkWell(
-                                onTap: () {
-                                  provider.getPurchaseByProduct(pid);
-                                  _showPurchaseHistoryBootomSheer(context);
-                                },
-                                child: Chip(
-                                  backgroundColor: appColor.cardColor,
-                                  labelStyle: TextStyle(color: Colors.white),
-                                  label: Text('Purchase History'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(product.name!),
-                          trailing: IconButton(
-                            onPressed: () {
-                              updateAlertDialog(
-                                context,
-                                'product name',
-                                product.name,
-                                (value) {
-                                  provider.updateproduct(
-                                    product.id!,
-                                    ProductName,
-                                    value,
-                                  );
-                                },
-                              );
-                            },
-                            icon: Icon(
-                              Icons.edit,
-                              color: appColor.cardColor,
-                            ),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text('$currencySymbol${product.salePrice}'),
-                          trailing: IconButton(
-                            onPressed: () {
-                              updateAlertDialog(
-                                context,
-                                'product price',
-                                product.salePrice.toString(),
-                                (value) {
-                                  provider.updateproduct(
-                                    product.id!,
-                                    ProductSalePrice,
-                                    num.parse(value),
-                                  );
-                                },
-                              );
-                            },
-                            icon: Icon(
-                              Icons.edit,
-                              color: appColor.cardColor,
-                            ),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(product.descripton ?? 'Not Available'),
-                          trailing: IconButton(
-                            onPressed: () {
-                              updateAlertDialog(
-                                context,
-                                'product descripton',
-                                product.descripton,
-                                (value) {
-                                  provider.updateproduct(
-                                    product.id!,
-                                    ProductDescripton,
-                                    value,
-                                  );
-                                },
-                              );
-                            },
-                            icon: Icon(
-                              Icons.edit,
-                              color: appColor.cardColor,
-                            ),
-                          ),
-                        ),
-                        SwitchListTile(
-                          activeColor: appColor.cardColor,
-                          inactiveTrackColor: Colors.grey,
-                          inactiveThumbColor: Colors.grey.withOpacity(0.3),
-                          title: Text('Available'),
-                          value: product.available,
-                          onChanged: (value) {
-                            provider.updateproduct(
-                                product.id!, ProductAvailable, value);
+                        InkWell(
+                          onTap: () {
+                            _showRePurchaseBootomSheet(context,
+                                ((price, quantity, date) {
+                              provider
+                                  .rePurchase(pid, price, quantity, date,
+                                      product.category!)
+                                  .then((value) {
+                                Navigator.of(context).pop();
+                              }).catchError((error) {
+                                showMsg(context, 'Could not save');
+                                throw error;
+                              });
+                            }));
                           },
+                          child: Chip(
+                            backgroundColor: appColor.cardColor,
+                            labelStyle: TextStyle(color: Colors.white),
+                            label: Text('Re-Purchase'),
+                          ),
                         ),
-                        SwitchListTile(
-                          activeColor: appColor.cardColor,
-                          inactiveTrackColor: Colors.grey,
-                          inactiveThumbColor: Colors.grey.withOpacity(0.3),
-                          title: Text('Featured'),
-                          value: product.featured,
-                          onChanged: (value) {
-                            provider.updateproduct(
-                                product.id!, ProductFeatured, value);
+                        SizedBox(width: 10),
+                        InkWell(
+                          onTap: () {
+                            provider.getPurchaseByProduct(pid);
+                            _showPurchaseHistoryBootomSheer(context);
                           },
+                          child: Chip(
+                            backgroundColor: appColor.cardColor,
+                            labelStyle: TextStyle(color: Colors.white),
+                            label: Text('Purchase History'),
+                          ),
                         ),
                       ],
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Failed'),
-                    );
-                  }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }),
-      ),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(product.name!),
+                    trailing: IconButton(
+                      onPressed: () {
+                        updateAlertDialog(
+                          context,
+                          'product name',
+                          product.name,
+                          (value) {
+                            provider.updateproduct(
+                              product.id!,
+                              ProductName,
+                              value,
+                            );
+                          },
+                        );
+                      },
+                      icon: Icon(
+                        Icons.edit,
+                        color: appColor.cardColor,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text('$currencySymbol${product.salePrice}'),
+                    trailing: IconButton(
+                      onPressed: () {
+                        updateAlertDialog(
+                          context,
+                          'product price',
+                          product.salePrice.toString(),
+                          (value) {
+                            provider.updateproduct(
+                              product.id!,
+                              ProductSalePrice,
+                              num.parse(value),
+                            );
+                          },
+                        );
+                      },
+                      icon: Icon(
+                        Icons.edit,
+                        color: appColor.cardColor,
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(product.descripton ?? 'Not Available'),
+                    trailing: IconButton(
+                      onPressed: () {
+                        updateAlertDialog(
+                          context,
+                          'product descripton',
+                          product.descripton,
+                          (value) {
+                            provider.updateproduct(
+                              product.id!,
+                              ProductDescripton,
+                              value,
+                            );
+                          },
+                        );
+                      },
+                      icon: Icon(
+                        Icons.edit,
+                        color: appColor.cardColor,
+                      ),
+                    ),
+                  ),
+                  SwitchListTile(
+                    activeColor: appColor.cardColor,
+                    inactiveTrackColor: Colors.grey,
+                    inactiveThumbColor: Colors.grey.withOpacity(0.3),
+                    title: Text('Available'),
+                    value: product.available,
+                    onChanged: (value) {
+                      provider.updateproduct(
+                          product.id!, ProductAvailable, value);
+                    },
+                  ),
+                  SwitchListTile(
+                    activeColor: appColor.cardColor,
+                    inactiveTrackColor: Colors.grey,
+                    inactiveThumbColor: Colors.grey.withOpacity(0.3),
+                    title: Text('Featured'),
+                    value: product.featured,
+                    onChanged: (value) {
+                      provider.updateproduct(
+                          product.id!, ProductFeatured, value);
+                    },
+                  ),
+                ],
+              );
+            }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Failed'),
+              );
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
     );
   }
 
@@ -380,7 +378,8 @@ class ProductDetailsPage extends StatelessWidget {
                     child: Text(
                       'Re-Purchase',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: appColor.cardColor),
+                          fontWeight: FontWeight.bold,
+                          color: appColor.cardColor),
                     ),
                     onPressed: () {
                       onSave(
@@ -411,7 +410,8 @@ class ProductDetailsPage extends StatelessWidget {
                     child: Text(
                       'Close',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: appColor.cardColor),
+                          fontWeight: FontWeight.bold,
+                          color: appColor.cardColor),
                     ),
                     onPressed: () => Navigator.of(context).pop(),
                   ),

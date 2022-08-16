@@ -32,7 +32,7 @@ class ProductsPage extends StatelessWidget {
                     crossAxisCount: 2,
                     crossAxisSpacing: 4,
                     mainAxisSpacing: 4,
-                    childAspectRatio: 2 / 2.4),
+                    childAspectRatio: 2 / 2.2),
                 itemBuilder: (context, index) {
                   final product = provider.productList[index];
                   return InkWell(

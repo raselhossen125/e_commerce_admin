@@ -8,12 +8,9 @@ class OrderProvider extends ChangeNotifier {
   Future<void> addOrderConstants(OrderConstantsModel model) =>
       DBHelper.addOrderConstants(model);
 
-  getOrderConstants() {
-    DBHelper.getOrderConstants().listen((event) {
-      if (event.exists) {
-        orderConstantsModel = OrderConstantsModel.fromMap(event.data()!);
-        notifyListeners();
-      }
-    });
+  Future<void> getOrderConstants() async{
+    final snapsort = await DBHelper.getOrderConstants();
+    orderConstantsModel = OrderConstantsModel.fromMap(snapsort.data()!);
+    notifyListeners();
   }
 }

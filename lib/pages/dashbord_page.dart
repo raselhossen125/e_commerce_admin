@@ -28,7 +28,7 @@ class DashbordPage extends StatelessWidget {
       ),
       drawer: MainDrawer(),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(2.0),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
