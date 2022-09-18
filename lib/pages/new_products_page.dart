@@ -387,6 +387,7 @@ class _NewProductsPageState extends State<NewProductsPage> {
         salePrice: num.parse(productSalePriceController.text),
         category: CategorySelectedValue,
         imageUrl: imageUrl,
+        stock: num.parse(purchaseQuantityController.text),
       );
       final purchaseModel = PurchaseModel(
         dateModel: DateModel(

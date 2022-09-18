@@ -4,6 +4,7 @@ import 'package:e_commerce_admin/pages/category_page.dart';
 import 'package:e_commerce_admin/pages/launcher_page.dart';
 import 'package:e_commerce_admin/pages/logIn_page.dart';
 import 'package:e_commerce_admin/pages/new_products_page.dart';
+import 'package:e_commerce_admin/pages/order_list_page.dart';
 import 'package:e_commerce_admin/pages/orders_page.dart';
 import 'package:e_commerce_admin/pages/product_details_page.dart';
 import 'package:e_commerce_admin/pages/products_page.dart';
@@ -17,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'pages/dashbord_page.dart';
+import 'provider/user_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +35,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => ProductProvider()),
         ChangeNotifierProvider(create: (context) => OrderProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
       ],
       child: const MyApp(),
     ),
@@ -76,6 +79,7 @@ class MyApp extends StatelessWidget {
         UsersPage.routeName: (_) => UsersPage(),
         NewProductsPage.routeName: (_) => NewProductsPage(),
         ProductDetailsPage.routeName: (_) => ProductDetailsPage(),
+        OrderListPage.routeName: (_) => OrderListPage(),
       },
     );
   }

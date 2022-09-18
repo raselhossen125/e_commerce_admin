@@ -8,6 +8,8 @@ const String ProductSalePrice = 'salePrice';
 const String ProductFeatured = 'featured';
 const String ProductAvailable = 'available';
 const String ProductImageUrl = 'imageUrl';
+const String ProductStock = 'stock';
+const String ProductRating = 'rating';
 
 class ProductModel {
   String? id;
@@ -15,9 +17,11 @@ class ProductModel {
   String? category;
   String? descripton;
   num salePrice;
+  num? stock;
   bool featured;
   bool available;
   String? imageUrl;
+  double rating;
 
   ProductModel({
     this.id,
@@ -28,6 +32,8 @@ class ProductModel {
     this.featured = true,
     this.available = true,
     this.imageUrl,
+    this.stock = 10,
+    this.rating = 0.0,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,6 +46,8 @@ class ProductModel {
       ProductFeatured: featured,
       ProductAvailable: available,
       ProductImageUrl: imageUrl,
+      ProductStock: stock,
+      ProductRating: rating,
     };
   }
 
@@ -52,5 +60,7 @@ class ProductModel {
     featured: map[ProductFeatured],
     available: map[ProductAvailable],
     imageUrl: map[ProductImageUrl],
+    stock: map[ProductStock] ?? 10,
+    rating: map[ProductRating] ?? 0.0,
   );
 }

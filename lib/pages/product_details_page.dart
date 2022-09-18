@@ -51,7 +51,7 @@ class ProductDetailsPage extends StatelessWidget {
                                 ((price, quantity, date) {
                               provider
                                   .rePurchase(pid, price, quantity, date,
-                                      product.category!)
+                                      product.category!, product.stock!)
                                   .then((value) {
                                 Navigator.of(context).pop();
                               }).catchError((error) {

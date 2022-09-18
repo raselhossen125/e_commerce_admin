@@ -7,6 +7,7 @@ import 'package:e_commerce_admin/pages/products_page.dart';
 import 'package:e_commerce_admin/pages/report_page.dart';
 import 'package:e_commerce_admin/pages/settings_page.dart';
 import 'package:e_commerce_admin/pages/users_page.dart';
+import 'package:e_commerce_admin/provider/order_provider.dart';
 import 'package:e_commerce_admin/provider/product_provider.dart';
 import 'package:e_commerce_admin/untils/colors.dart';
 import 'package:e_commerce_admin/widgets/dashbord_item_view.dart';
@@ -21,6 +22,7 @@ class DashbordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Provider.of<ProductProvider>(context, listen: false).getAllcategories();
     Provider.of<ProductProvider>(context, listen: false).getAllProducts();
+    Provider.of<OrderProvider>(context, listen: false).getAllOrders();
     return Scaffold(
       backgroundColor: appColor.bgColor,
       appBar: AppBar(

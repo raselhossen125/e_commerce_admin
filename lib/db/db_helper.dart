@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_admin/model/order_constants_model.dart';
 import 'package:e_commerce_admin/model/product_model.dart';
@@ -34,13 +36,15 @@ class DBHelper {
       .set(model.toMap());
 
   static Future<void> rePurchase(
-      PurchaseModel purchaseModel, CategoryModel catModel) {
+      PurchaseModel purchaseModel, CategoryModel catModel, num stock) {
     final wb = _db.batch();
     final doc = _db.collection(purchaseCollection).doc();
     purchaseModel.id = doc.id;
     wb.set(doc, purchaseModel.toMap());
     final catDoc = _db.collection(categoriesCollection).doc(catModel.catId);
     wb.update(catDoc, {CategoryProductCount: catModel.count});
+    final proDoc = _db.collection(productsCollection).doc(purchaseModel.productId);
+    wb.update(proDoc, {ProductStock : (stock + purchaseModel.productQuantity)});
     return wb.commit();
   }
 
@@ -85,5 +89,9 @@ class DBHelper {
 
   static upDateProduct(String id, Map<String, dynamic> map) {
     return _db.collection(productsCollection).doc(id).update(map);
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrders() {
+    return _db.collection(ordersCollection).snapshots();
   }
 }

@@ -19,7 +19,7 @@ class ProductProvider extends ChangeNotifier {
   Future<void> addCategory(CategoryModel categoryModel) =>
       DBHelper.addNewCategory(categoryModel);
 
-  Future<void> rePurchase(String pId, num price, num quantity, DateTime date, String catName) {
+  Future<void> rePurchase(String pId, num price, num quantity, DateTime date, String catName, num stock) {
     final catModel = getCategoryModelByCatName(catName);
     catModel.count += quantity;
     final purchaseModel = PurchaseModel(
@@ -33,7 +33,7 @@ class ProductProvider extends ChangeNotifier {
       productQuantity: quantity,
       productId: pId,
     );
-    return DBHelper.rePurchase(purchaseModel, catModel);
+    return DBHelper.rePurchase(purchaseModel, catModel, stock);
   }
 
   Future<void> addNewProduct(

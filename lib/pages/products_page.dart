@@ -62,11 +62,20 @@ class ProductsPage extends StatelessWidget {
                             Text(
                               product.name!,
                               style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 16),
+                                  fontWeight: FontWeight.w500, fontSize: 16,),
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: false,
                             ),
                             SizedBox(height: 4),
-                            Text(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
                                 '$currencySymbol${product.salePrice.toString()}'),
+                                Text(
+                                'Stock : ${product.stock}'),
+                              ],
+                            )
                           ],
                         ),
                       ),
